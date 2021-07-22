@@ -19,7 +19,7 @@ public class Calculator {
         return num1 / num2;
     }
     
-    public double squareRoot (double num1) {
-        return Math.sqrt(num1);
+    public double root (double num1, double num2) {
+        return Math.round(Math.pow(num1, 1.0 / num2));
     }
 }

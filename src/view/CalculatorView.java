@@ -1,18 +1,26 @@
 package view;
 
 import calculator.Calculator;
+import enuns.OperationType;
+import java.util.ArrayList;
+import operation.Operation;
 
 
 public class CalculatorView extends javax.swing.JFrame {
 
     private final Calculator calculator;
+    private final ArrayList<Operation> resultList;
+    private int indexPosition;
     
     
     public CalculatorView() {
         initComponents();
         
         calculator = new Calculator();
+        resultList = new ArrayList<>();
+        indexPosition = 0;
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -34,6 +42,9 @@ public class CalculatorView extends javax.swing.JFrame {
         outputResultado = new javax.swing.JTextField();
         btnResultado = new javax.swing.JButton();
         btnLimpar = new javax.swing.JButton();
+        btnVoltar = new javax.swing.JButton();
+        btnAvancar = new javax.swing.JButton();
+        outputOperacao = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Calculator");
@@ -52,7 +63,7 @@ public class CalculatorView extends javax.swing.JFrame {
         inputNum2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
 
         comboboxOperacao.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        comboboxOperacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Soma", "Subtração", "Multiplicação", "Divisão", "Raiz quadrada" }));
+        comboboxOperacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione", "Soma", "Subtração", "Multiplicação", "Divisão", "Raiz" }));
 
         jLabel3.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         jLabel3.setText("Operação");
@@ -62,7 +73,7 @@ public class CalculatorView extends javax.swing.JFrame {
 
         outputResultado.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
 
-        btnResultado.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        btnResultado.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         btnResultado.setText("=");
         btnResultado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -77,6 +88,24 @@ public class CalculatorView extends javax.swing.JFrame {
                 btnLimparActionPerformed(evt);
             }
         });
+
+        btnVoltar.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        btnVoltar.setText("<");
+        btnVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVoltarActionPerformed(evt);
+            }
+        });
+
+        btnAvancar.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
+        btnAvancar.setText(">");
+        btnAvancar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAvancarActionPerformed(evt);
+            }
+        });
+
+        outputOperacao.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -96,6 +125,7 @@ public class CalculatorView extends javax.swing.JFrame {
                             .addComponent(jLabel4))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(outputOperacao)
                             .addComponent(inputNum2)
                             .addComponent(comboboxOperacao, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(outputResultado))))
@@ -104,6 +134,12 @@ public class CalculatorView extends javax.swing.JFrame {
                     .addComponent(btnResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLimpar))
                 .addContainerGap(106, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(255, 255, 255)
+                .addComponent(btnVoltar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAvancar)
+                .addGap(142, 142, 142))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,7 +162,12 @@ public class CalculatorView extends javax.swing.JFrame {
                     .addComponent(outputResultado, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
                     .addComponent(btnLimpar))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAvancar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(outputOperacao, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(130, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -153,41 +194,80 @@ public class CalculatorView extends javax.swing.JFrame {
         
         double result = 0;
         
+        OperationType operationType;
+        
         switch (comboboxOperacao) {
             case "Soma":
                 result = calculator.sum(num1, num2);
+                operationType = OperationType.SOMA;
                 break;           
             
             case "Subtração":
                 result = calculator.subtraction(num1, num2);
+                operationType = OperationType.SUBTRACAO;
                 break;
                 
             case "Multiplicação":
                 result = calculator.multiplication(num1, num2);
+                operationType = OperationType.MULTIPLICACAO;
                 break;
                 
             case "Divisão":
                 result = calculator.division(num1, num2);
+                operationType = OperationType.DIVISAO;
                 break;  
                 
             case "Raiz quadrada":
-                result = calculator.squareRoot(num1);
+                result = calculator.root(num1, num2);
+                operationType = OperationType.RAIZ;
                 break;
+                
+            default:
+                // op n  encontrada
+                return;
         }
-        
+              
         String finalResult = String.valueOf(result);
         outputResultado.setText(finalResult);
         
+        resultList.add(new Operation(num1, num2, result, operationType));
+        
+        updateHistory();  
         
         
     }//GEN-LAST:event_btnResultadoActionPerformed
-
+    
+    private void updateHistory(){
+        Operation operation = resultList.get(indexPosition);
+        String ope = operation.getNum1() + " " + operation.getOperationType().getNomeFormatado() + " " + operation.getNum2() + " = " + operation.getResult();
+        outputOperacao.setText(ope);
+         
+    }
+    
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         comboboxOperacao.setSelectedIndex(-1);
         inputNum1.setText("");
         inputNum2.setText("");
         outputResultado.setText("");
     }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnAvancarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAvancarActionPerformed
+        if (indexPosition +1 >= resultList.size()) {
+           return; 
+        }
+        
+        indexPosition = indexPosition +1;
+        updateHistory();
+    }//GEN-LAST:event_btnAvancarActionPerformed
+
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        if (indexPosition -1 < 0) {
+           return; 
+        }
+        
+        indexPosition = indexPosition -1;
+        updateHistory();
+    }//GEN-LAST:event_btnVoltarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,8 +305,10 @@ public class CalculatorView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAvancar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnResultado;
+    private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox<String> comboboxOperacao;
     private javax.swing.JTextField inputNum1;
     private javax.swing.JTextField inputNum2;
@@ -235,6 +317,7 @@ public class CalculatorView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField outputOperacao;
     private javax.swing.JTextField outputResultado;
     // End of variables declaration//GEN-END:variables
 }
